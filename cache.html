@@ -24,10 +24,29 @@ body:before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;back
 .cache-subtitle{min-height:28px;margin-top:22px;color:#a9dcff;font-size:clamp(14px,1.7vw,18px);font-weight:650;overflow-wrap:anywhere}
 .cache-footer{position:fixed;z-index:2;left:12px;bottom:10px;color:rgba(210,229,255,.24);font-size:9px;line-height:1.5;letter-spacing:.35px;pointer-events:none;user-select:none}
 #cacheFrame{position:fixed;width:0;height:0;border:0;visibility:hidden}
-@media(max-width:600px){.mainContainer{padding:100px 14px 70px}.lab-brand{top:12px;right:12px;min-height:54px;padding:7px 9px 7px 13px;gap:9px}.lab-brand img{width:38px;height:38px}.cache-screen{border-radius:19px}.cache-title{letter-spacing:.7px}}
+
+/* v1.1 Yeniləmə Banneri (5 saniyəlik loading) */
+#v11-update-banner{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:20000;width:min(540px,calc(100vw - 32px));padding:12px 16px;border-radius:16px;border:1px solid rgba(116,198,255,.85);background:linear-gradient(135deg,rgba(4,24,58,.96),rgba(6,78,158,.92));box-shadow:0 14px 36px rgba(0,0,0,.5),0 0 24px rgba(22,140,255,.35);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#f4f8ff;transition:opacity .45s ease,transform .45s ease}
+#v11-update-banner.hide{opacity:0;transform:translate(-50%,-14px);pointer-events:none}
+.v11-top-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:14px;font-weight:700}
+.v11-badge{display:inline-block;padding:2px 8px;border-radius:999px;background:rgba(112,189,255,.22);border:1px solid rgba(145,207,255,.6);color:#9ed8ff;font-size:12px;margin-right:6px}
+#v11-close-btn{padding:4px 10px;font-size:12px;line-height:1.2;font-weight:700;color:#fff;background:linear-gradient(135deg,#168cff,#0754c7);border:1px solid rgba(128,198,255,.85);border-radius:8px;cursor:pointer}
+.v11-progress-track{width:100%;height:6px;margin-top:10px;border-radius:999px;background:rgba(255,255,255,.14);overflow:hidden}
+#v11-progress-bar{width:100%;height:100%;border-radius:999px;background:linear-gradient(90deg,#48b2ff,#9be0ff);transform-origin:left center;transition:transform .1s linear}
+
+@media(max-width:600px){.mainContainer{padding:112px 14px 70px}.lab-brand{top:12px;right:12px;min-height:54px;padding:7px 9px 7px 13px;gap:9px}.lab-brand img{width:38px;height:38px}.cache-screen{border-radius:19px}.cache-title{letter-spacing:.7px}#v11-update-banner{top:74px;width:calc(100vw - 20px);padding:10px 12px}.v11-top-row{font-size:12.5px}}
 </style>
 </head>
 <body class="bg-gray-900 text-white">
+<!-- v1.1 Yeniləmə Mesajı (5 saniyə) -->
+<div id="v11-update-banner" role="status" aria-live="polite">
+<div class="v11-top-row">
+<div><span class="v11-badge">v1.1</span><span id="v11-status-text">v1.1 yeniləməsi yüklənir... (5s)</span></div>
+<button type="button" id="v11-close-btn" onclick="dismissV11Banner()">Bağla</button>
+</div>
+<div class="v11-progress-track"><div id="v11-progress-bar"></div></div>
+</div>
+
 <header class="lab-brand"><span>PlayStation Programmer Lab</span><img src="./Lab.png" alt="Lab loqosu" onerror="this.style.display='none';"></header>
 <main class="mainContainer">
 <section class="cache-screen">
@@ -79,6 +98,50 @@ window.addEventListener('message', function(event) {
 // Firmware versiyasına uyğun keş səhifəsini gizli iframe-də aç
 statusEl.textContent = (fwVersion || 'Naməlum') + ' proqram təminatı üçün keş başladılır...';
 frame.src = targetPage;
+
+// v1.1 5 saniyəlik yuxarı yeniləmə mesajı
+(function () {
+    var duration = 5000;
+    var startTime = performance.now();
+    var banner = document.getElementById('v11-update-banner');
+    var bar = document.getElementById('v11-progress-bar');
+    var v11Text = document.getElementById('v11-status-text');
+    var timerId = null;
+
+    window.dismissV11Banner = function () {
+        if (timerId) cancelAnimationFrame(timerId);
+        if (!banner || banner.classList.contains('hide')) return;
+        banner.classList.add('hide');
+        setTimeout(function () {
+            if (banner && banner.parentNode) banner.parentNode.removeChild(banner);
+        }, 480);
+    };
+
+    function tick(now) {
+        var elapsed = now - startTime;
+        var remaining = Math.max(0, duration - elapsed);
+        var ratio = remaining / duration;
+
+        if (bar) {
+            bar.style.transform = 'scaleX(' + ratio.toFixed(4) + ')';
+        }
+        if (v11Text) {
+            var secsLeft = Math.ceil(remaining / 1000);
+            v11Text.textContent = 'v1.1 yeniləməsi yüklənir... (' + secsLeft + 's)';
+        }
+
+        if (remaining > 0) {
+            timerId = requestAnimationFrame(tick);
+        } else {
+            if (v11Text) {
+                v11Text.textContent = 'v1.1 hazırdır!';
+            }
+            setTimeout(window.dismissV11Banner, 120);
+        }
+    }
+
+    timerId = requestAnimationFrame(tick);
+})();
 </script>
 </body>
 </html>
