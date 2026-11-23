@@ -1,77 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="az">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-    <title>Caching</title>
-    <meta name="author" content="ArabPixel">
-    <link rel="stylesheet" href="./includes/css/colors/default.css">
-    <link rel="stylesheet" href="./includes/css/layouts/index.css">
-    <link rel="stylesheet" href="./includes/css/cache.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="theme-color" content="#06152e">
+<title>PlayStation Programmer Lab | Keşləmə</title>
+<meta name="author" content="PlayStation Programmer Lab">
+<link rel="stylesheet" href="./includes/css/colors/default.css">
+<link rel="stylesheet" href="./includes/css/layouts/index.css">
+<link rel="stylesheet" href="./includes/css/cache.css">
+<style>
+*{box-sizing:border-box}
+html,body{width:100%;min-height:100%;margin:0;overflow:hidden;font-family:"Segoe UI",Arial,sans-serif;color:#fff;background:#031027 url("./Arxa.png") center center/100% 100% no-repeat fixed}
+body:before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 50% 42%,rgba(0,112,255,.2),transparent 55%),linear-gradient(180deg,rgba(1,9,25,.42),rgba(1,10,29,.72))}
+.mainContainer{position:relative;z-index:1;width:100%;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:105px 24px 85px}
+.lab-brand{position:fixed;z-index:5;top:22px;right:24px;display:flex;align-items:center;gap:14px;padding:10px 13px 10px 20px;min-height:68px;border:1px solid rgba(91,190,255,.72);border-radius:17px;background:linear-gradient(135deg,rgba(5,28,65,.94),rgba(0,100,205,.62));box-shadow:0 0 24px rgba(0,137,255,.27),inset 0 0 18px rgba(65,177,255,.12);backdrop-filter:blur(12px)}
+.lab-brand span{font-size:clamp(14px,1.55vw,20px);font-weight:800;letter-spacing:.5px;text-shadow:0 0 13px rgba(78,190,255,.55);white-space:nowrap}
+.lab-brand img{width:48px;height:48px;object-fit:contain;border-radius:8px}
+.cache-screen{width:min(760px,94vw);padding:clamp(28px,5vw,54px);text-align:center;border:1px solid rgba(91,190,255,.8);border-radius:25px;background:linear-gradient(145deg,rgba(4,22,53,.91),rgba(5,53,111,.78));box-shadow:0 22px 70px rgba(0,0,0,.48),0 0 36px rgba(0,132,255,.26),inset 0 1px 0 rgba(255,255,255,.12);backdrop-filter:blur(15px)}
+.cache-title{margin-bottom:30px;color:#fff;font-size:clamp(21px,3vw,32px);line-height:1.25;font-weight:900;letter-spacing:1.4px;text-shadow:0 0 18px rgba(50,173,255,.55)}
+.progress-bar-wrap{width:100%;height:19px;padding:3px;overflow:hidden;border:1px solid rgba(112,203,255,.65);border-radius:999px;background:rgba(0,7,23,.8);box-shadow:inset 0 2px 7px rgba(0,0,0,.55),0 0 18px rgba(0,132,255,.18)}
+.progress-bar-fill{width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,#0875ee,#28c7ff,#a2edff);box-shadow:0 0 17px rgba(48,190,255,.85);transition:width .35s ease}
+.cache-subtitle{min-height:28px;margin-top:22px;color:#a9dcff;font-size:clamp(14px,1.7vw,18px);font-weight:650;overflow-wrap:anywhere}
+.cache-footer{position:fixed;z-index:2;left:12px;bottom:10px;color:rgba(210,229,255,.24);font-size:9px;line-height:1.5;letter-spacing:.35px;pointer-events:none;user-select:none}
+#cacheFrame{position:fixed;width:0;height:0;border:0;visibility:hidden}
+@media(max-width:600px){.mainContainer{padding:100px 14px 70px}.lab-brand{top:12px;right:12px;min-height:54px;padding:7px 9px 7px 13px;gap:9px}.lab-brand img{width:38px;height:38px}.cache-screen{border-radius:19px}.cache-title{letter-spacing:.7px}}
+</style>
 </head>
-
 <body class="bg-gray-900 text-white">
-    <main class="mainContainer">
-        <section class="cache-screen">
-            <div class="cache-title">DOSYALAR KOPYALANIYOR</div>
-            <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" id="progressFill"></div>
-            </div>
-            <div class="cache-subtitle" id="cacheStatus">Preparing...</div>
-        </section>
-        <div class="absolute bottom-10 text-center w-full">Firmware-Based Caching System</div>
-    </main>
+<header class="lab-brand"><span>PlayStation Programmer Lab</span><img src="./Lab.png" alt="Lab loqosu"></header>
+<main class="mainContainer">
+<section class="cache-screen">
+<div class="cache-title">FAYLLAR KÖÇÜRÜLÜR</div>
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill"></div></div>
+<div class="cache-subtitle" id="cacheStatus">Hazırlanır...</div>
+</section>
+</main>
+<div class="cache-footer">GoldHen : Sistro Dizayner : B7rks<br>2026 © PlayStation Programmer Lab</div>
+<iframe id="cacheFrame" src="about:blank" title="Keşləmə çərçivəsi"></iframe>
+<script src="./includes/js/storage.js"></script>
+<script src="./includes/js/testMode.js"></script>
+<script src="./includes/js/firmware.js"></script>
+<script>
+var fwVersion = getPs4FwVersion();
+var targetPage = getCachePage(fwVersion);
+var statusEl = document.getElementById('cacheStatus');
+var fillEl = document.getElementById('progressFill');
+var frame = document.getElementById('cacheFrame');
 
-    <iframe id="cacheFrame" src="about:blank"></iframe>
+// iframe_cache.js faylından gələn mesajları dinlə
+window.addEventListener('message', function(event) {
+    var data = event.data;
+    if (!data || !data.type) return;
+    if (data.type === 'CACHE_PROGRESS') {
+        if (data.percent >= 0) {
+            fillEl.style.width = data.percent + '%';
+            statusEl.textContent = 'Yüklənir... ' + data.percent + '%';
+        } else {
+            statusEl.textContent = 'Yüklənir... (' + data.loaded + ' / ' + data.total + ')';
+        }
+    } else if (data.type === 'CACHE_COMPLETE' || data.type === 'CACHE_EXISTS') {
+        fillEl.style.width = '100%';
+        statusEl.textContent = data.type === 'CACHE_EXISTS'
+            ? 'Fayllar artıq keşlənib! Keçid edilir...'
+            : 'Hazırdır! Keçid edilir...';
+        setTimeout(function(){ window.location.replace(mainPage); }, 1000);
+    } else if (data.type === 'CACHE_CHECKING') {
+        statusEl.textContent = 'Keş yoxlanılır...';
+    } else if (data.type === 'CACHE_DOWNLOADING') {
+        statusEl.textContent = 'Fayllar keşə əlavə olunur...';
+    } else if (data.type === 'CACHE_ERROR') {
+        var reason = data.reason || 'Naməlum xəta';
+        statusEl.textContent = 'Keş xətası: ' + reason;
+        setTimeout(function(){ window.location.replace(mainPage); }, 3000);
+    }
+}, false);
 
-    <script src="./includes/js/storage.js"></script>
-    <script src="./includes/js/testMode.js"></script>
-    <script src="./includes/js/firmware.js"></script>
-    <script>
-        var fwVersion = getPs4FwVersion();
-        var targetPage = getCachePage(fwVersion);
-
-        var statusEl = document.getElementById('cacheStatus');
-        var fillEl = document.getElementById('progressFill');
-        var frame = document.getElementById('cacheFrame');
-
-        // Listen for postMessages from the iframe (iframe_cache.js)
-        window.addEventListener('message', function (event) {
-            var data = event.data;
-            if (!data || !data.type) return;
-
-            if (data.type === 'CACHE_PROGRESS') {
-                if (data.percent >= 0) {
-                    fillEl.style.width = data.percent + '%';
-                    statusEl.textContent = 'Downloading... ' + data.percent + '%';
-                } else {
-                    statusEl.textContent = 'Downloading... (' + data.loaded + ' of ' + data.total + ')';
-                }
-            } else if (data.type === 'CACHE_COMPLETE' || data.type === 'CACHE_EXISTS') {
-                fillEl.style.width = '100%';
-                statusEl.textContent = data.type === 'CACHE_EXISTS' ? 'Already cached! Redirecting...' : 'Done! Redirecting...';
-                setTimeout(function () {
-                    window.location.replace(mainPage);
-                }, 1000);
-
-            } else if (data.type === 'CACHE_CHECKING') {
-                statusEl.textContent = 'Checking cache...';
-            } else if (data.type === 'CACHE_DOWNLOADING') {
-                statusEl.textContent = 'Caching files...';
-            } else if (data.type === 'CACHE_ERROR') {
-                var reason = data.reason || 'Unknown error';
-                statusEl.textContent = 'Cache error: ' + reason;
-                setTimeout(function () {
-                    window.location.replace(mainPage);
-                }, 3000);
-            }
-        }, false);
-
-        // Load the firmware-based cache page into the hidden iframe
-        statusEl.textContent = 'Starting cache for firmware ' + (fwVersion || 'unknown') + '...';
-        frame.src = targetPage;
-    </script>
+// Firmware versiyasına uyğun keş səhifəsini gizli iframe-də aç
+statusEl.textContent = (fwVersion || 'Naməlum') + ' proqram təminatı üçün keş başladılır...';
+frame.src = targetPage;
+</script>
 </body>
-
 </html>
