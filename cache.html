@@ -48,7 +48,6 @@ var statusEl = document.getElementById('cacheStatus');
 var fillEl = document.getElementById('progressFill');
 var frame = document.getElementById('cacheFrame');
 
-// iframe_cache.js faylından gələn mesajları dinlə
 window.addEventListener('message', function(event) {
     var data = event.data;
     if (!data || !data.type) return;
@@ -76,9 +75,28 @@ window.addEventListener('message', function(event) {
     }
 }, false);
 
-// Firmware versiyasına uyğun keş səhifəsini gizli iframe-də aç
 statusEl.textContent = (fwVersion || 'Naməlum') + ' proqram təminatı üçün keş başladılır...';
 frame.src = targetPage;
 </script>
+
+<script>
+/* PlayStation Programmer Lab: offline asset cache */
+(function () {
+  if (!('serviceWorker' in navigator)) {
+    console.log('Bu brauzer Service Worker dəstəkləmir.');
+    return;
+  }
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('./sw.js', { scope: './' })
+      .then(function (reg) {
+        console.log('Offline keş aktivdir:', reg.scope);
+      })
+      .catch(function (err) {
+        console.warn('Offline keş qeydiyyatı alınmadı:', err);
+      });
+  });
+})();
+</script>
+
 </body>
 </html>
