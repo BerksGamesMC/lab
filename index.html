@@ -10,7 +10,6 @@
     <meta name="keywords"
         content="PS4, PlayStation 4, webkit exploit, jailbreak, psfree lapse, cssfontface, WebKitty, PSFree Enhanced, cssfontface, lapse, netctrl, slopkit, relapse">
 
-    <!-- Facebook / Discord / WhatsApp -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="PlayStation Programmer Lab">
     <meta property="og:description"
@@ -18,7 +17,6 @@
     <meta property="og:image" content="./includes/assets/icons/webkitty.svg">
     <meta property="og:url" content="http://blackkonsol.github.io/14.02">
 
-    <!-- Twitter / X -->
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="PlayStation Programmer Lab">
     <meta name="twitter:description"
@@ -28,7 +26,6 @@
     <link rel="stylesheet" id="main-stylesheet" href="">
     <link rel="stylesheet" id="color-stylesheet" href="">
     <script>
-        // Prevent "Theme Flash" by applying the href before the body renders
         var savedTheme = localStorage.getItem('theme') || "index";
         var savedColor = localStorage.getItem('color') || "default";
         if (savedTheme) {
@@ -43,7 +40,6 @@
         else
             document.dir = "ltr";
 
-        // redirect to http request (only when online / not local)
         var goToHttps = localStorage.getItem("dontHTTPS") != "1";
         var isThisPS4 = navigator.userAgent.indexOf("PlayStation 4") !== -1;
         var isLocalServer = /^(127\.|192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.)/.test(window.location.hostname) || window.location.protocol === "file:";
@@ -418,12 +414,11 @@
 </head>
 
 <body class="bg-gray-900 text-white">
-    <!-- v1.1 Yeniləmə Mesajı (5 saniyə) -->
     <div id="v11-update-banner" role="status" aria-live="polite">
         <div class="v11-top-row">
             <div>
                 <span class="v11-badge">v1.1</span>
-                <span id="v11-status-text">Yeniləmə yoxlanılır... (5s)</span>
+                <span id="v11-status-text">v1.1 yeniləməsi yüklənir... (5s)</span>
             </div>
             <button type="button" id="v11-close-btn" onclick="dismissV11Banner()">Bağla</button>
         </div>
@@ -444,7 +439,6 @@
     <main class="mainContainer">
         <section id="initial-screen" class="relative flex flex-col items-center justify-center min-h-screen p-6 transition-opacity duration-700
             opacity-100">
-            <!-- Header Buttons -->
             <header class="absolute top-6 left-6 flex space-x-3 rtl:space-x-reverse z-10">
                 <div>
                     <button onclick="settingsPopup()"
@@ -489,8 +483,7 @@
 
             <div id="black-konsol-start-actions">
                 <h1 id="black-konsol-host-title">PlayStation Programmer Lab</h1>
-                <!-- PS Button -->
-                <button id="pslogo">
+                <button id="pslogo" type="button">
                     <div id="ps-logo-container"
                         class="relative group cursor-pointer flex flex-col items-center justify-center p-8 rounded-full bg-white/5 hover:bg-white/10 transition-all duration-300 transform hover:scale-102">
                         <svg id="ps-logo" class="w-32 h-32 transition-all duration-500 ease-in-out" viewBox="0 0 32 32"
@@ -516,7 +509,6 @@
                 Stop Auto Jailbreak
             </button>
 
-            <!-- Compatibility message -->
             <p id="PS4FW" class="text-white/70 text-lg mt-4 mb-6">-</p>
             <a class="hidden secondHostBtn bg-blue-600 hover:bg-blue-700 p-3 rounded font-semibold disabled:opacity-50 transition-colors text-white text-center"
                 href="http://blackkonsol.github.io/14.02/" style="text-decoration: none;">
@@ -524,7 +516,6 @@
                     class="bg-blue-600 hover:bg-blue-700 p-3 rounded font-semibold disabled:opacity-50 transition-colors text-white text-center">Yükləmələri xarici PayLoader vasitəsilə aç</button>
             </a>
 
-            <!-- Jailbreak flavor options -->
             <div id="choosejb-initial" class="bg-gray-800 p-6 rounded-lg shadow-xl text-center">
                 <h3 class="text-xl font-semibold mb-4">HEN növünü seç</h3>
                 <div class="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8 rtl:gap-4 sm:rtl:gap-8">
@@ -550,7 +541,6 @@
                 </div>
             </div>
 
-            <!-- Scroll Down Icon -->
             <button id="scrollDown" class="absolute bottom-10 cursor-pointer"
                 onclick="ui.exploitScreen.scrollIntoView({block: 'end'});">
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" fill="currentColor" viewBox="0 0 512 512">
@@ -559,10 +549,8 @@
             </button>
         </section>
 
-        <!-- Exploit section -->
         <section id="exploit-main-screen" class="flex w-full bg-gray-900 text-white transition-opacity duration-700">
             <div id="exploitContainer" class="grid md:grid-cols-2">
-                <!-- Exploit console panel -->
                 <div id="exploit-status-panel" class="gap-4 bg-gray-800 p-6 rounded-lg flex flex-col h-full w-full">
                     <div class="flex justify-between w-auto" style="align-items: baseline;">
                         <h2 class="text-xl font-semibold mb-4" id="state">Prosesin vəziyyəti</h2>
@@ -577,7 +565,6 @@
                         dir="ltr">
                         <pre id='console'><center>--</center></pre>
                     </div>
-                    <!-- HEN Selector -->
                     <div id="henSelection" class="flex items-center justify-center gap-4">
                         <label
                             class="flex items-center px-2 py-1 rounded bg-gray-700/60 hover:bg-gray-700 cursor-pointer shadow border-2 border-transparent focus-within:border-blue-500"
@@ -609,7 +596,6 @@
                     </div>
                 </div>
 
-                <!-- Payloads section -->
                 <div id="payloadsSection" class="gap-4 bg-gray-800 p-6 rounded-lg flex flex-col h-full">
                     <div class="flex justify-between">
                         <div>
@@ -679,6 +665,33 @@
 
             timerId = requestAnimationFrame(tick);
         })();
+
+        // GoldHEN-i başlat düyməsinin etibarlı işləməsi üçün təhlükəsiz hazırlıq
+        document.addEventListener("DOMContentLoaded", function () {
+            try {
+                if (!localStorage.getItem("bareboneJB")) {
+                    localStorage.setItem("bareboneJB", "true");
+                }
+                if (!localStorage.getItem("hen") && typeof saveJbFlavor === "function") {
+                    saveJbFlavor("hen", "GoldHEN");
+                }
+            } catch (e) {}
+
+            var psBtn = document.getElementById("pslogo");
+            if (psBtn) {
+                psBtn.addEventListener("click", function () {
+                    try {
+                        localStorage.setItem("bareboneJB", "true");
+                        if (!localStorage.getItem("hen")) {
+                            localStorage.setItem("hen", "GoldHEN");
+                        }
+                        if (!sessionStorage.getItem("payload_path")) {
+                            sessionStorage.setItem("payload_path", "./payloads/goldhen.bin");
+                        }
+                    } catch (e) {}
+                });
+            }
+        });
     </script>
 </body>
 
